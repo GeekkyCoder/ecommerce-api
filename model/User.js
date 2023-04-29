@@ -15,11 +15,11 @@ const userSchema = new mongoose.Schema({
     required: [true, "plz provide email"],
     maxlength: 8,
   },
-  roles: {
-    type: String,
-    enum: ["admin", "user"],
-    default: "user",
-  },
+  role:{
+    type:String,
+    enum:['admin','user'],
+    default:'user'
+  }
 });
 
 module.exports = mongoose.model("user", userSchema);
