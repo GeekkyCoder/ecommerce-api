@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const morgan = require("morgan")
 require("dotenv").config();
 
 
@@ -18,14 +19,10 @@ const PORT = process.env.PORT || 5000;
 const MONGO_URL = process.env.MONGO_URL;
 
 // middlewares
+app.use(morgan('combined'))
 app.use(express.json())
 
 app.use('/api/v1/auth', userRouter)
-
-app.get("/", (req, res) => {
-  res.send("hello world");
-});
-
 
 app.use(notFoundMiddleware)
 app.use(errorHandlerMiddleware)
