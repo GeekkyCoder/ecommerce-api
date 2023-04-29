@@ -1,10 +1,14 @@
 const express = require("express");
+const mongoose = require("mongoose");
 require("dotenv").config();
 
+
+
 const connectDB = require("./db/connect");
-const mongoose = require("mongoose");
 const notFoundMiddleware = require("./middleware/not-found")
 const errorHandlerMiddleware = require("./middleware/error-handler")
+
+const userRouter = require("./routes/user/user.route")
 
 require("express-async-errors")
 
@@ -15,6 +19,8 @@ const MONGO_URL = process.env.MONGO_URL;
 
 // middlewares
 app.use(express.json())
+
+app.use('/api/v1/auth', userRouter)
 
 app.get("/", (req, res) => {
   res.send("hello world");
