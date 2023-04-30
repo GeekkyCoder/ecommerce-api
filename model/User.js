@@ -42,13 +42,13 @@ userSchema.methods.comaparePasswords = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-userSchema.methods.createJWT = async function () {
-  const token = await jwt.sign(
-    { userId: this._id, name: this.name, role: this.role },
-    process.env.JWT_SECRET,
-    { expiresIn: process.env.JWT_LIFETIME }
-  );
-  return token;
-};
+// userSchema.methods.createJWT = async function () {
+//   const token = await jwt.sign(
+//     { userId: this._id, name: this.name, role: this.role },
+//     process.env.JWT_SECRET,
+//     { expiresIn: process.env.JWT_LIFETIME }
+//   );
+//   return token;
+// };
 
 module.exports = mongoose.model("user", userSchema);
