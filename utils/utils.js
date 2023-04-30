@@ -1,4 +1,3 @@
-const { StatusCodes } = require("http-status-codes");
 const jwt = require("jsonwebtoken");
 
 const ONE_DAY = 1000 * 60 * 60 * 24;
@@ -16,9 +15,9 @@ const attachCookiesToResponse = async (res, tokenUser) => {
   res.cookie("token", token, {
     httpOnly: true,
     expires: new Date(Date.now() + ONE_DAY) ,
+    secure:process.env.NODE_ENV === 'production',
+    signed:true,
   });
-
-  res.status(StatusCodes.CREATED).json({ user: tokenUser });
 };
 
 module.exports = {
