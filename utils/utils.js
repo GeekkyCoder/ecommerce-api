@@ -18,6 +18,8 @@ const attachCookiesToResponse = async (res, tokenUser) => {
     secure:process.env.NODE_ENV === 'production',
     signed:true,
   });
+
+  res.status(200).json({ user: tokenUser });
 };
 
 module.exports = {

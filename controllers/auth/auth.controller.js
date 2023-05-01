@@ -51,11 +51,16 @@ const login = async (req, res) => {
 
   attachCookiesToResponse(res, tokenUser);
 
-  res.status(200).json({ user: tokenUser });
+  // res.status(200).json({ user: tokenUser });
 };
 
 const logout = async (req, res) => {
-  res.send("logout user");
+  res.cookie("token", "", {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+
+  res.status(200).json('user logged out!')
 };
 
 module.exports = {
