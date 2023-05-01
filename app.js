@@ -12,6 +12,7 @@ const errorHandlerMiddleware = require("./middleware/error-handler")
 
 const authRouter = require("./routes/auth/auth.routes.js");
 const userRouter = require("./routes/user/user.routes.js");
+const authMiddleware = require("./middleware/authentication");
 
 require("express-async-errors")
 
@@ -28,6 +29,7 @@ app.use(express.static('./public'))
 
 
 app.use('/api/v1/auth', authRouter)
+app.use(authMiddleware)
 app.use('/api/v1/users', userRouter)
 
 app.use(notFoundMiddleware)

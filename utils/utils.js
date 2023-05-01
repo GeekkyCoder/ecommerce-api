@@ -8,7 +8,7 @@ const createJWT = async (tokenUser) => {
   });
 };
 
-const isTokenValid = (token) => jwt.verify(token, process.env.JWT_SECRET);
+const isTokenValid = async token => jwt.verify(token, process.env.JWT_SECRET);
 
 const attachCookiesToResponse = async (res, tokenUser) => {
   const token = await createJWT(tokenUser);

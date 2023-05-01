@@ -1,27 +1,43 @@
-const getAllUsers = async (req,res) => {
-   res.send("get all users")
-}
+const User = require("../../model/User");
 
-const getSingleUser = async(req,res) => {
-    res.send("get single user")
-}
+const getAllUsers = async (req, res) => {
+  console.log(req.user);
+  const users = await User.find({ role: "user" }, { password: 0 });
 
-const showCurrentUser = async(req,res) => {
-    res.send("current user")
-}
+  if (!users) {
+    return res.status(400).json({ msg: "could not fetch users..." });
+  }
 
-const updateUser = async(req,res) => {
-    res.send("update user")
-}
+  res.status(200).json({ users });
+};
 
-const updateUserPassword = async (req,res) => {
-    res.send("update user password")
-}
+const getSingleUser = async (req, res) => {
+  const { id: _id } = req.params;
+  const user = await User.findOne({ _id }, { password: 0 });
+
+  if (!user) {
+    return res.status(400).json({ msg: "user not found" });
+  }
+
+  res.status(200).json({ user });
+};
+
+const showCurrentUser = async (req, res) => {
+  res.send("current user");
+};
+
+const updateUser = async (req, res) => {
+  res.send("update user");
+};
+
+const updateUserPassword = async (req, res) => {
+  res.send("update user password");
+};
 
 module.exports = {
-    getAllUsers,
-    getSingleUser,
-    showCurrentUser,
-    updateUser,
-    updateUserPassword
-}
+  getAllUsers,
+  getSingleUser,
+  showCurrentUser,
+  updateUser,
+  updateUserPassword,
+};
