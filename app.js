@@ -1,20 +1,19 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const morgan = require("morgan")
-const cookieParser = require("cookie-parser")
+const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
+require("express-async-errors");
 require("dotenv").config();
 
-
-
 const connectDB = require("./db/connect");
-const notFoundMiddleware = require("./middleware/not-found")
-const errorHandlerMiddleware = require("./middleware/error-handler")
+const notFoundMiddleware = require("./middleware/not-found");
+const errorHandlerMiddleware = require("./middleware/error-handler");
 
 const authRouter = require("./routes/auth/auth.routes.js");
 const userRouter = require("./routes/user/user.routes.js");
 const authMiddleware = require("./middleware/authentication");
+const authorize = require("./middleware/authorize");
 
-require("express-async-errors")
 
 const app = express();
 
@@ -22,22 +21,22 @@ const PORT = process.env.PORT || 5000;
 const MONGO_URL = process.env.MONGO_URL;
 
 // middlewares
-app.use(morgan('tiny'))
-app.use(express.json())
-app.use(cookieParser(process.env.JWT_SECRET))
-app.use(express.static('./public'))
+app.use(morgan("tiny"));
+app.use(express.json());
+app.use(cookieParser(process.env.JWT_SECRET));
+app.use(express.static("./public"));
 
-
-app.use('/api/v1/auth', authRouter)
+app.use("/api/v1/auth", authRouter);
 app.use(authMiddleware)
-app.use('/api/v1/users', userRouter)
+app.use(authorize('admin','owner'))
+app.use("/api/v1/users", userRouter);
 
-app.use(notFoundMiddleware)
-app.use(errorHandlerMiddleware)
+app.use(notFoundMiddleware);
+app.use(errorHandlerMiddleware);
 
-mongoose.connection.on('open', () => {
-    console.log('successfully connected to mongodb')
-})
+mongoose.connection.on("open", () => {
+  console.log("successfully connected to mongodb");
+});
 
 const startServer = async () => {
   try {
@@ -50,4 +49,4 @@ const startServer = async () => {
   }
 };
 
-startServer()
+startServer();
