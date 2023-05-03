@@ -11,9 +11,6 @@ const errorHandlerMiddleware = require("./middleware/error-handler");
 
 const authRouter = require("./routes/auth/auth.routes.js");
 const userRouter = require("./routes/user/user.routes.js");
-const authMiddleware = require("./middleware/authentication");
-const authorize = require("./middleware/authorize");
-
 
 const app = express();
 
@@ -27,8 +24,6 @@ app.use(cookieParser(process.env.JWT_SECRET));
 app.use(express.static("./public"));
 
 app.use("/api/v1/auth", authRouter);
-app.use(authMiddleware)
-app.use(authorize('admin','owner'))
 app.use("/api/v1/users", userRouter);
 
 app.use(notFoundMiddleware);
