@@ -22,8 +22,16 @@ const attachCookiesToResponse = async (res, tokenUser) => {
   res.status(200).json({ user: tokenUser });
 };
 
+const checkPermissions = (requestUser,resourceUserId) => {
+   if(requestUser.role === "admin") return true 
+  //  console.log(requestUser.userId === resourceUserId.toString())
+   if(requestUser.userId === resourceUserId.toString()) return true 
+   return false
+}
+
 module.exports = {
   createJWT,
   isTokenValid,
   attachCookiesToResponse,
+  checkPermissions
 };

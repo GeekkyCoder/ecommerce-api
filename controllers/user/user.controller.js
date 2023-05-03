@@ -1,4 +1,8 @@
 const User = require("../../model/User");
+const {
+  attachCookiesToResponse,
+  checkPermissions,
+} = require("../../utils/utils");
 
 const getAllUsers = async (req, res) => {
   console.log(req.user);
@@ -19,6 +23,14 @@ const getSingleUser = async (req, res) => {
     return res.status(400).json({ msg: "user not found" });
   }
 
+  const hasRights = checkPermissions(req.user, _id);
+
+  if (!hasRights) {
+    return res
+      .status(401)
+      .json({ msg: "not authorized to access this resource" });
+  }
+
   res.status(200).json({ user });
 };
 
@@ -27,7 +39,21 @@ const showCurrentUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  res.send("update user");
+  const { email, name } = req.body;
+
+  if (!email || !name) {
+    return res.status(400).json({ msg: "plz provide all details" });
+  }
+
+  const user = await User.findOneAndUpdate(
+    { _id: req.user.userId },
+    { email, name },
+    { new: true, runValidators: true }
+  );
+
+  const tokenUser = { name: user.name, userId: user._id, role: user.role };
+
+  attachCookiesToResponse(res, tokenUser);
 };
 
 const updateUserPassword = async (req, res) => {
@@ -49,12 +75,12 @@ const updateUserPassword = async (req, res) => {
 
   await user.save();
 
-  res.status(200).json({ msg: "sucess! password updated" });
+  res.status(200).json({ msg: "success! password updated" });
 };
 
 const deleteUser = async (req, res) => {
   const { id } = req.params;
-  
+
   const user = await User.deleteOne({ _id: id });
 
   if (!user) {
