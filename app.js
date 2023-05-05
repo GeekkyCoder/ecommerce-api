@@ -11,6 +11,7 @@ const errorHandlerMiddleware = require("./middleware/error-handler");
 
 const authRouter = require("./routes/auth/auth.routes.js");
 const userRouter = require("./routes/user/user.routes.js");
+const productRouter = require("./routes/product/product.routes");
 
 const app = express();
 
@@ -21,10 +22,10 @@ const MONGO_URL = process.env.MONGO_URL;
 app.use(morgan("tiny"));
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
-app.use(express.static("./public"));
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/products", productRouter);
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
