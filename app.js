@@ -14,6 +14,7 @@ const errorHandlerMiddleware = require("./middleware/error-handler");
 const authRouter = require("./routes/auth/auth.routes.js");
 const userRouter = require("./routes/user/user.routes.js");
 const productRouter = require("./routes/product/product.routes");
+const reviewRouter = require("./routes/review/review.routes");
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use(express.static(path.join(__dirname,'./public')))
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/products", productRouter);
+app.use("/api/v1/reviews", reviewRouter)
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
