@@ -42,6 +42,12 @@ const getSingleReview = async (req, res) => {
     return res.status(400).json({ msg: "no review for this product" });
   }
 
+  const hasPermissions =  checkPermissions(req.user,review.user) 
+
+  if(!hasPermissions){
+    return res.status(403).json({msg:"you are not authorized to access this resource"})
+  }
+
   res.status(200).json({ review });
 };
 
