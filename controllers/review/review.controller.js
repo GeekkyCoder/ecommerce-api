@@ -1,8 +1,11 @@
 const Review = require("../../model/Review");
 const Product = require("../../model/Product");
+const { checkPermissions } = require("../../utils/utils");
 
-const getAllReviews = (req, res) => {
-  res.send("all reviews");
+const getAllReviews = async (req, res) => {
+  const reviews = await Review.find({});
+
+  res.status(200).json({ reviews, count:reviews.length });
 };
 
 const createAReview = async (req, res) => {
@@ -30,13 +33,19 @@ const createAReview = async (req, res) => {
   res.status(201).json({ review });
 };
 
-const getSingleReview = (req, res) => {
-  res.send("get single review");
+const getSingleReview = async (req, res) => {
+  const { id: reviewId } = req.params;
+
+  const review = await Review.findOne({ product: reviewId });
+
+  if (!review) {
+    return res.status(400).json({ msg: "no review for this product" });
+  }
+
+  res.status(200).json({ review });
 };
 
-const updateReview = (req, res) => {
-  res.send("update a review");
-};
+const updateReview = (req, res) => {};
 
 const deleteReview = (req, res) => {
   res.send("delete review");
