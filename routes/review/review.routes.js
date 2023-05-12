@@ -12,7 +12,7 @@ const {
 
 reviewRouter.get("/", getAllReviews);
 reviewRouter.post("/", authMiddleware, createAReview);
-reviewRouter.get("/:id", authMiddleware, getSingleReview);
+reviewRouter.get("/:id", getSingleReview);
 reviewRouter.patch("/:id", authMiddleware, updateReview);
 reviewRouter.delete("/:id", authMiddleware, deleteReview);
 

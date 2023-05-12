@@ -5,7 +5,7 @@ const { checkPermissions } = require("../../utils/utils");
 const getAllReviews = async (req, res) => {
   const reviews = await Review.find({});
 
-  res.status(200).json({ reviews, count:reviews.length });
+  res.status(200).json({ reviews, count: reviews.length });
 };
 
 const createAReview = async (req, res) => {
@@ -42,19 +42,41 @@ const getSingleReview = async (req, res) => {
     return res.status(400).json({ msg: "no review for this product" });
   }
 
-  const hasPermissions =  checkPermissions(req.user,review.user) 
+//   const hasPermissions = checkPermissions(req.user, review.user);
 
-  if(!hasPermissions){
-    return res.status(403).json({msg:"you are not authorized to access this resource"})
-  }
+//   if (!hasPermissions) {
+//     return res
+//       .status(403)
+//       .json({ msg: "you are not authorized to access this resource" });
+//   }
 
   res.status(200).json({ review });
 };
 
 const updateReview = (req, res) => {};
 
-const deleteReview = (req, res) => {
-  res.send("delete review");
+const deleteReview = async (req, res) => {
+  const { id: reviewId } = req.params;
+
+  const reviewExist = await Review.findOne({ _id: reviewId });
+
+  if (!reviewExist) {
+    return res
+      .status(400)
+      .json({ msg: `review with id: ${reviewId} does not exist` });
+  }
+
+  const hasPermissions = checkPermissions(req.user, reviewExist.user);
+
+  if (!hasPermissions) {
+    return res
+      .status(403)
+      .json({ msg: "you are not authorized to access this resource" });
+  }
+
+  await Review.deleteOne({ _id: reviewId });
+
+  res.status(200).json({ msg: "success! review deleted" });
 };
 
 module.exports = {
