@@ -3,10 +3,12 @@ const Product = require("../../model/Product");
 const { checkPermissions } = require("../../utils/utils");
 
 const getAllReviews = async (req, res) => {
-  const reviews = await Review.find({});
+  const reviews = await Review.find({}).populate({path:'product',select:'name company price'}).populate({path:'user',select:'name'});
 
   res.status(200).json({ reviews, count: reviews.length });
 };
+
+
 
 const createAReview = async (req, res) => {
   const { product: productId } = req.body;
@@ -32,6 +34,8 @@ const createAReview = async (req, res) => {
 
   res.status(201).json({ review });
 };
+
+
 
 const getSingleReview = async (req, res) => {
   const { id: reviewId } = req.params;
@@ -77,6 +81,8 @@ const updateReview = async (req, res) => {
 
   res.status(200).json({ review });
 };
+
+
 
 const deleteReview = async (req, res) => {
   const { id: reviewId } = req.params;
