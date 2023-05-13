@@ -1,5 +1,5 @@
 const Product = require("../../model/Product");
-const path = require("path")
+const path = require("path");
 
 const getAllProducts = async (req, res) => {
   const products = await Product.find({});
@@ -48,31 +48,35 @@ const updateProduct = async (req, res) => {
 const uploadImage = async (req, res) => {
   // console.log(req.files)
 
-  if(!req.files){
-    return res.status(400).json({msg:"No files uploaded"})
+  if (!req.files) {
+    return res.status(400).json({ msg: "No files uploaded" });
   }
 
   // console.log(req.files.image)
 
-  const productImage = req.files.image
+  const productImage = req.files.image;
 
-  if(!productImage.mimetype.startsWith('image')){
-    return res.status(400).json({msg:"plese provide image file"})
+  if (!productImage.mimetype.startsWith("image")) {
+    return res.status(400).json({ msg: "plese provide image file" });
   }
 
   //1mb
-  const maxSize = 1024 * 1024
+  const maxSize = 1024 * 1024;
 
-  if(productImage.size > maxSize){
-    return res.status(400).json({msg:"please upload image smaller than 1mb"})
+  if (productImage.size > maxSize) {
+    return res
+      .status(400)
+      .json({ msg: "please upload image smaller than 1mb" });
   }
 
-  const imagePath = path.join(__dirname,`../../public/uploads/${productImage.name}`)
+  const imagePath = path.join(
+    __dirname,
+    `../../public/uploads/${productImage.name}`
+  );
 
-  await productImage.mv(imagePath)
+  await productImage.mv(imagePath);
 
-  res.status(200).json({image:`/uploads/${productImage.name}`})
-
+  res.status(200).json({ image: `/uploads/${productImage.name}` });
 };
 
 const deleteProduct = async (req, res) => {
@@ -86,7 +90,7 @@ const deleteProduct = async (req, res) => {
       .json({ msg: `product with id: ${_id} does not exist` });
   }
 
-  await Product.deleteOne({ _id });
+  await Product.deleteOne({_id});
 
   res.status(200).json({ msg: "success! product deleted" });
 };

@@ -76,4 +76,8 @@ const productSchema = new mongoose.Schema(
 //   justOne:false
 // })
 
+productSchema.pre('remove', async function(next){
+   await this.model('review').deleteMany({product:this._id})
+})
+
 module.exports = mongoose.model("product", productSchema);
