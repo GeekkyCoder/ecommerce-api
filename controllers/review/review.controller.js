@@ -53,7 +53,18 @@ const getSingleReview = async (req, res) => {
   res.status(200).json({ review });
 };
 
-const updateReview = (req, res) => {};
+const updateReview = async (req, res) => {
+  const {id:reviewId} = req.params 
+
+  const review = await Review.findOneAndUpdate({_id:reviewId},req.body,{new:true,runValidators:true})
+
+  if(!review) {
+    return res.status(400).json({msg:`no review with ${reviewId} found`})
+  }
+
+  res.status(200).json({review})
+  
+};
 
 const deleteReview = async (req, res) => {
   const { id: reviewId } = req.params;
