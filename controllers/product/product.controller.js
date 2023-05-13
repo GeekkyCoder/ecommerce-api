@@ -10,6 +10,7 @@ const getAllProducts = async (req, res) => {
 const getSingleProduct = async (req, res) => {
   const { id: _id } = req.params;
 
+  // .populate('reviews') -> mongoose virtuals
   const product = await Product.findOne({ _id });
 
   if (!product) {

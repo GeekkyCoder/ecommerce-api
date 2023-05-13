@@ -6,6 +6,7 @@ const {
   deleteProduct,
   uploadImage,
 } = require("../../controllers/product/product.controller");
+const { getSingleProductReviews } = require("../../controllers/review/review.controller");
 const authMiddleware = require("../../middleware/authentication");
 const authorize = require("../../middleware/authorize");
 
@@ -29,5 +30,6 @@ productRouter.delete(
   [authMiddleware, authorize("admin")],
   deleteProduct
 );
+productRouter.get('/:id/reviews', authMiddleware, getSingleProductReviews)
 
 module.exports = productRouter;
