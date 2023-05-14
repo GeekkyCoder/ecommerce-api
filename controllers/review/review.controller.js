@@ -103,7 +103,7 @@ const deleteReview = async (req, res) => {
       .json({ msg: "you are not authorized to access this resource" });
   }
 
-  await Review.deleteOne({ _id: reviewId });
+  await Review.deleteOne({_id:reviewId});
 
   res.status(200).json({ msg: "success! review deleted" });
 };
