@@ -1,6 +1,7 @@
 const Order = require("../../model/Order");
 const Orders = require("../../model/Order");
 const Product = require("../../model/Product");
+const { checkPermissions } = require("../../utils/utils");
 
 const fakeStripeApi = async ({ amount, currency }) => {
   const clientSecret = "someRandomText";
@@ -67,19 +68,59 @@ const createOrder = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
   const orders = await Orders.find({});
-  res.status(200).json({ orders });
+  res.status(200).json({ orders, count: orders.length });
 };
 
-const getSingleOrder = (req, res) => {
-  res.send("get single order");
+const getSingleOrder = async (req, res) => {
+  const { id: _id } = req.params;
+
+  const order = await Order.findOne({ _id });
+
+  if (!order) {
+    return res.status(404).json({ msg: `no order with id ${_id}` });
+  }
+
+  const hasPermissions = checkPermissions(req.user, order.user);
+
+  if (!hasPermissions) {
+    return res
+      .status(403)
+      .json({ msg: "not authorized to access this resource" });
+  }
+
+  res.status(200).json({ order });
 };
 
-const getCurrentUserOrders = (req, res) => {
-  res.send("get Current User Orders");
+const getCurrentUserOrders = async (req, res) => {
+  const orders = await Order.find({ user: req.user.userId });
+  res.status(200).json({ orders, count: orders.length });
 };
 
-const updateOrder = (req, res) => {
-  res.send("update Order");
+const showCurrentUser = (req,res) => {
+  return res.status(200).json({user:req.user})
+}
+
+const updateOrder = async (req, res) => {
+  const { id: _id } = req.params;
+  const { paymentIntentId } = req.body;
+
+  const order = await Order.findOne({ _id });
+
+  if (!order) {
+    return res.status(404).json({ msg: `no order with id ${_id}` });
+  }
+
+  const hasPermissions = checkPermissions(req.user, order.user);
+
+  if (!hasPermissions) {
+    return res.status(403).json({ msg: "not authorized" });
+  }
+
+  order.paymentIntentId = paymentIntentId;
+  order.status = "paid";
+  await Order.save();
+
+  res.status(200).json({ order });
 };
 
 const deleteOrder = (req, res) => {
@@ -93,4 +134,5 @@ module.exports = {
   getCurrentUserOrders,
   updateOrder,
   deleteOrder,
+  showCurrentUser
 };
