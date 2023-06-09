@@ -6,6 +6,11 @@ const fileUpload = require("express-fileupload")
 const path = require('path')
 require("express-async-errors");
 require("dotenv").config();
+const rateLimiter = require("express-rate-limit")
+const cors = require("cors")
+const mongoSantize = require("express-mongo-sanitize")
+const helmet = require('helmet')
+const xss  = require("xss-clean")
 
 const connectDB = require("./db/connect");
 const notFoundMiddleware = require("./middleware/not-found");
@@ -22,8 +27,20 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const MONGO_URL = process.env.MONGO_URL;
 
+// security packges
+app.use(rateLimiter({
+  windowMs:2 * 60 * 1000,
+  max:60
+}))
+
+app.use(helmet())
+app.use(cors())
+app.use(xss())
+app.use(mongoSantize())
+
+
 // middlewares
-// app.use(morgan("tiny"));
+app.use(morgan("tiny"));
 app.use(express.json());
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use(fileUpload())
